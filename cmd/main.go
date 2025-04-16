@@ -13,6 +13,7 @@ func main() {
 
 	r.POST("/rest/substr/find", findSubstringHandler)
 	r.POST("/rest/email/check", checkEmailHandler)
+	r.POST("/rest/iin/check", checkIINHandler)
 
 	r.Run(":8088")
 }
@@ -50,4 +51,26 @@ func checkEmailHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"emails": emails})
+}
+
+func checkIINHandler(c *gin.Context) {
+	bodyBytes, err := c.GetRawData()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "could not parse raw data"})
+	}
+
+	bodyText := string(bodyBytes)
+
+	re := regexp.MustCompile(`(?i)IIN:\s*(\d{12})`)
+	matches := re.FindAllStringSubmatch(bodyText, -1)
+
+	iins := []string{}
+
+	for _, match := range matches {
+		if len(match) > 1 {
+			iins = append(iins, match[1])
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{"iins": iins})
 }
