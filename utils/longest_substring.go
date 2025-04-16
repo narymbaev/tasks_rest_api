@@ -1,15 +1,6 @@
-package main
+package utils
 
-import (
-	"fmt"
-)
-
-func main() {
-	s := "abcabbdeebba"
-	fmt.Println(longestSubstring(s))
-}
-
-func longestSubstring(s string) string {
+func LongestSubstring(s string) string {
 	var l, r, maxLen int
 	stringLen := len(s)
 	longestSubstring := ""
